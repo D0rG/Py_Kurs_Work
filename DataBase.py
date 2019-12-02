@@ -3,23 +3,49 @@ import sqlite3
 # SELECT вобор столба нужного мне
 # WHERE условие для вывода SELECT
 
-def AddToDataBase(RegNum, ParkTime): # Добавляет регНомер и время в БД
-    DBconnect = sqlite3.connect("DataBase.sqllite")
-    cursor = DBconnect.cursor()
+DataBaseName = "DataBase.sqllite"
 
-    cursor.execute("INSERT INTO CarParkingInfo (RegNumber, ParkingTime) VALUES ('{}','{}')".format(RegNum, ParkTime))
-    DBconnect.commit()
-    res = cursor.fetchall()
+def AddToDataBase(RegNum, ParkTime, TableName = "CarParkingInfo"): # Добавляет регНомер и время в БД
+    try:
+        DBconnect = sqlite3.connect(DataBaseName) # Подключение к базе (возмжоно нужно ватащить наружу)
+        cursor = DBconnect.cursor()
+        cursor.execute("INSERT INTO {} (RegNumber, ParkingTime) VALUES ('{}','{}')".format(TableName, RegNum, ParkTime))
+        DBconnect.commit() # Синхронизирует изменения с баззой
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при занесении данных в базу: " + e)
+        return None
 
-    DBconnect.close()
-    return res
+def GetTime(RegNum, TableName = "CarParkingInfo"):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT ParkingTime FROM {} WHERE RegNumber='{}'".format(TableName, RegNum))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return res
+    except Exception as e:
+        print("Ошибка при получении времени из базы: " + e)
+        return None
 
-def GetTime(RegNum):
-    DBconnect = sqlite3.connect("DataBase.sqllite")
-    cursor = DBconnect.cursor()
+def DelFromDataBase(RegNumber, TableName = "CarParkingInfo"):  # Удаляет каждое упоминание о номере
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("DELETE FROM {} WHERE RegNumber='{}'".format(TableName, RegNumber))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при удалении из базы: " + e)
+        return None
 
-    cursor.execute("SELECT ParkingTime FROM CarParkingInfo WHERE RegNumber='{}'".format(RegNum))
-    res = cursor.fetchall()
-
-    DBconnect.close()
-    return res
+def SetUnparking(UnParkingTime, RegNumber, TableName = "CarParkingInfo"):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("UPDATE {} SET OutTime='{}' WHERE RegNumber='{}'".format(TableName, UnParkingTime, RegNumber))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при задавании времени выезда в базу: " + e)
+        return None
