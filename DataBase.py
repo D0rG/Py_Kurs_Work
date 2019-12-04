@@ -2,6 +2,7 @@ import sqlite3
 from Car import Car
 import datetime
 
+#region Information
 # FROM выбирает таблицу
 # SELECT вобор столба нужного мне
 # WHERE условие для вывода SELECT
@@ -9,7 +10,10 @@ import datetime
 DataBaseName = "DataBase.sqllite"
 TableName = "CarParkingInfo"
 NameListVIP = "VIP_List"
+NameParkList = "Places"
+#endregion
 
+#region CarParkingInfo
 def AddToDataBase(Car, ParkTime):  # Добавляет регНомер и время в БД
     try:
         DBconnect = sqlite3.connect(DataBaseName)  # Подключение к базе (возмжоно нужно ватащить наружу)
@@ -87,7 +91,9 @@ def CarOnParing(Car):  # Если есть пустой АутТайм, то а�
         print("Ошибка при поиске наличии машины на парковке: " + e)
         DBconnect.close()
         return e
+#endregion
 
+#region VIP List
 def VIP(Car):  # Если машина в вип листе
     try:
         DBconnect = sqlite3.connect(DataBaseName)
@@ -129,3 +135,126 @@ def AddToVIP(Car):  # Если машина в вип листе
         print("Ошибка при добавлении в VIP список: " + e)
         DBconnect.close()
         return None
+#endregion
+
+#region Places
+#region Get
+def GetMaxPlaceDef():
+     try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return int(res[0][0])
+     except Exception as e:
+        print("Ошибка при получении максимального места на стандартной парковке: " + e)
+        DBconnect.close()
+        return None
+
+
+def GetMaxPlaceVIP():
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return int(res[0][0])
+    except Exception as e:
+        print("Ошибка при получении максимального места на vip парковке: " + e)
+        DBconnect.close()
+        return None
+
+def GetFreePlaceDef():
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return int(res[0][0])
+    except Exception as e:
+        print("Ошибка при получении занятого места на обычной парковке: " + e)
+        DBconnect.close()
+        return None
+
+def GetFreePlaceVIP():
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return int(res[0][0])
+    except Exception as e:
+        print("Ошибка при получении занятого места на vip парковке: " + e)
+        DBconnect.close()
+        return None
+#endregion
+
+#region Add
+def AddMaxPlaceDef(add):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        add += int(res[0][0])
+        cursor.execute("UPDATE {} SET MaxPlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при добавлении в MaxPlaceDef: " + e)
+        DBconnect.close()
+        return None
+
+
+def AddMaxPlaceVIP(add):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        add += int(res[0][0])
+        cursor.execute("UPDATE {} SET MaxPlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при добавлении в MaxPlaceVIP: " + e)
+        DBconnect.close()
+        return None
+
+
+def AddFreePlaceDef(add):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        add += int(res[0][0])
+        cursor.execute("UPDATE {} SET FreePlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при добавлении в FreePlaceDef: " + e)
+        DBconnect.close()
+        return None
+
+
+def AddFreePlaceVIP(add):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, "Parking"))
+        res = cursor.fetchall()
+        add += int(res[0][0])
+        cursor.execute("UPDATE {} SET FreePlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при добавлении в FreePlaceVIP: " + e)
+        DBconnect.close()
+        return None
+#endregion
+#endregion
