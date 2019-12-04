@@ -1,17 +1,18 @@
 import tkinter
 from DataBase import *
 from Stack import Stack
-from Car import Car
 
-car = Car("Blue", "в586ме777")
+car = Car("Blue", "а586аа775")
+
+if(car.ID == None):
+    print("Автомобиль не действителен")
+else:
+    print("Автомобиль нормальный")
 
 #print(car.RegNum)
 
-#AddToDataBase("в666вв666", "15:20")
-#DelFromDataBase("в666вв666")
-#SetUnparking("14:15", "в555вв555")
-#print(GetTime("в555вв555"))
+#AddToDataBase(car, None)
+#SetUnparking(None,  car)
+#DelFromDataBase(car)
+#SetUnparking(str(datetime.datetime.now()), car)
 
-# Car.SetID(car)
-# Car.SeyWTF(car)
-# print(car.ID)

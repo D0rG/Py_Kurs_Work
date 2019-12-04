@@ -5,43 +5,23 @@ class Car(object):
     Liters = ['а', 'в', 'е', 'к', 'м', 'н', 'о', 'р', 'с', 'т', 'у', 'х']  # Все буквы из автомобильных номеров
     Color = ""
     RegNum = ""  # Номер выглядит так wNNNwwNNN
-    ID = 0
+    ID = None
 
     def __init__(self, Color, RegNum):
-        if(re.match("\w{1}\d{3}\w{2}\d{3}", RegNum)):
-            self.Color = Color
-            self.RegNum = RegNum
-            print("Номер действителен")
-        else:
-            print("номер не действителен")
+        try:
+            if(re.match("\w{1}\d{3}\w{2}\d{2,3}", RegNum) and len(RegNum) < 10):
+                self.Color = Color
+                self.RegNum = RegNum
+                self.SetId()
+            #     print("Номер действителен")
+            # else:
+            #     print("номер не действителен")
+        except Exception as e:
+            ID = None
+            # print(e)
 
-    def GetRegNum(self):
-        return self.RegNum
-
-    # def SetID(self):  # Код которого не должно существовать
-    #     if(self.RegNum != ""):
-    #         id = 0
-    #         f = open("Nums.txt", 'a')
-    #
-    #         for Lit in self.Liters:
-    #             for Num in range(1, 1000):
-    #                 for Lit2 in self.Liters:
-    #                     for Lit3 in self.Liters:
-    #                         for Reg in range(1, 1000):
-    #                             if(Num < 10):
-    #                                 NewNum = "00" + str(Num)
-    #                             elif(Num < 100):
-    #                                 NewNum = "0" + str(Num)
-    #                             else:
-    #                                 NewNum = str(Num)
-    #
-    #                             if(Reg < 10):
-    #                                 NewReg = "0" + str(Reg)
-    #                             else:
-    #                                 NewReg = str(Reg)
-    #
-    #                             AutoNum = Lit + NewNum + Lit2 + Lit3 + NewReg
-    #                             AutoNum = AutoNum + " " + str(id) + "\n"
-    #                             f.write(AutoNum)
-    #                             id += 1
-    #         f.close()
+    def SetId(self): # Задаёт ID, получает его изменением РегНомера. Для сотрировки.
+        RegNumber = self.RegNum
+        for liter in range(0, len(self.Liters)):
+            RegNumber = RegNumber.replace(self.Liters[liter], str(liter + 1))
+        self.ID = int(RegNumber)
