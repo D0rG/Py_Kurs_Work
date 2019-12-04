@@ -1,12 +1,14 @@
 import sqlite3
 from Car import Car
 import datetime
+
 # FROM выбирает таблицу
 # SELECT вобор столба нужного мне
 # WHERE условие для вывода SELECT
 
 DataBaseName = "DataBase.sqllite"
 TableName = "CarParkingInfo"
+NameListVIP = "VIP_List"
 
 def AddToDataBase(Car, ParkTime):  # Добавляет регНомер и время в БД
     try:
@@ -19,6 +21,7 @@ def AddToDataBase(Car, ParkTime):  # Добавляет регНомер и вр
         DBconnect.close()  # Закрывает открытую БД
     except Exception as e:
         print("Ошибка при занесении данных в базу: " + e)
+        DBconnect.close()
         return None
 
 def GetTime(Car):  # Пока хз зачем это
@@ -31,6 +34,7 @@ def GetTime(Car):  # Пока хз зачем это
         return res
     except Exception as e:
         print("Ошибка при получении времени из базы: " + e)
+        DBconnect.close()
         return None
 
 def DelFromDataBase(Car):  # Удаляет каждое упоминание о номере
@@ -42,6 +46,7 @@ def DelFromDataBase(Car):  # Удаляет каждое упоминание о
         DBconnect.close()
     except Exception as e:
         print("Ошибка при удалении из базы: " + e)
+        DBconnect.close()
         return None
 
 def SetUnparking(UnParkingTime, Car):  # Задаёт время выеза, примерно так же как и время вьезда
@@ -58,4 +63,69 @@ def SetUnparking(UnParkingTime, Car):  # Задаёт время выеза, п�
         DBconnect.close()
     except Exception as e:
         print("Ошибка при задавании времени выезда в базу: " + e)
+        DBconnect.close()
+        return None
+
+def CarOnParing(Car):  # Если есть пустой АутТайм, то автомобиль ещё на паркинге
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT OutTime FROM {} WHERE RegNumber='{}'".format(TableName, Car.RegNum))  # Получаем все АутТаймы, где данный номер
+        res = cursor.fetchall()  # Если в АутТайме есть пустой эллемент, это значит что автомобиль находиться на парковке
+
+        result = False
+        if(len(res) == 0):  # Если нет эллементов АутТайм, то тачка точно не на парковке
+            result = False
+        else:  # Проверяет все элементы АутТайм и если какой то из них равен пробелу, тачка на парковке
+            for i in res:
+                if(i[0] == " "):
+                    result = True
+
+        DBconnect.close()
+        return result
+    except Exception as e:
+        print("Ошибка при поиске наличии машины на парковке: " + e)
+        DBconnect.close()
+        return e
+
+def VIP(Car):  # Если машина в вип листе
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT RegNum FROM {}".format(NameListVIP))
+        res = cursor.fetchall()
+
+        for i in range(0, len(res)):
+            if(res[i][0] == Car.RegNum):
+                DBconnect.close()
+                return True
+
+        DBconnect.close()
+        return False
+    except Exception as e:
+        print("Ошибка при проверки ВИП автомобиля: " + e)
+        DBconnect.close()
+        return None
+
+def AddToVIP(Car):  # Если машина в вип листе
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT RegNum FROM {}".format(NameListVIP))
+        res = cursor.fetchall()
+
+        InList = False
+        for i in range(0, len(res)):
+            if(res[i][0] == Car.RegNum):
+                InList = True
+        if(InList == False):
+            cursor.execute("INSERT INTO {} (RegNum) VALUES ('{}')".format(NameListVIP, Car.RegNum))
+
+
+        DBconnect.commit()
+        DBconnect.close()
+        return False
+    except Exception as e:
+        print("Ошибка при добавлении в VIP список: " + e)
+        DBconnect.close()
         return None
