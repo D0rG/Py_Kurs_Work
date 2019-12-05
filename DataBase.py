@@ -117,16 +117,8 @@ def AddToVIP(Car):  # Если машина в вип листе
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT RegNum FROM {}".format(NameListVIP))
-        res = cursor.fetchall()
-
-        InList = False
-        for i in range(0, len(res)):
-            if(res[i][0] == Car.RegNum):
-                InList = True
-        if(InList == False):
+        if(VIP(Car) == False):
             cursor.execute("INSERT INTO {} (RegNum) VALUES ('{}')".format(NameListVIP, Car.RegNum))
-
 
         DBconnect.commit()
         DBconnect.close()
@@ -139,11 +131,11 @@ def AddToVIP(Car):  # Если машина в вип листе
 
 #region Places
 #region Get
-def GetMaxPlaceDef():
+def GetMaxPlaceDef(ParkName):
      try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, ParkName))
         res = cursor.fetchall()
         DBconnect.close()
         return int(res[0][0])
@@ -153,11 +145,11 @@ def GetMaxPlaceDef():
         return None
 
 
-def GetMaxPlaceVIP():
+def GetMaxPlaceVIP(ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, ParkName))
         res = cursor.fetchall()
         DBconnect.close()
         return int(res[0][0])
@@ -166,11 +158,11 @@ def GetMaxPlaceVIP():
         DBconnect.close()
         return None
 
-def GetFreePlaceDef():
+def GetFreePlaceDef(ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, ParkName))
         res = cursor.fetchall()
         DBconnect.close()
         return int(res[0][0])
@@ -179,11 +171,11 @@ def GetFreePlaceDef():
         DBconnect.close()
         return None
 
-def GetFreePlaceVIP():
+def GetFreePlaceVIP(ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, ParkName))
         res = cursor.fetchall()
         DBconnect.close()
         return int(res[0][0])
@@ -194,14 +186,14 @@ def GetFreePlaceVIP():
 #endregion
 
 #region Add
-def AddMaxPlaceDef(add):
+def AddMaxPlaceDef(add, ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceDef", NameParkList, ParkName))
         res = cursor.fetchall()
         add += int(res[0][0])
-        cursor.execute("UPDATE {} SET MaxPlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        cursor.execute("UPDATE {} SET MaxPlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), ParkName))
         DBconnect.commit()
         DBconnect.close()
     except Exception as e:
@@ -210,14 +202,14 @@ def AddMaxPlaceDef(add):
         return None
 
 
-def AddMaxPlaceVIP(add):
+def AddMaxPlaceVIP(add, ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("MaxPlaceVIP", NameParkList, ParkName))
         res = cursor.fetchall()
         add += int(res[0][0])
-        cursor.execute("UPDATE {} SET MaxPlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        cursor.execute("UPDATE {} SET MaxPlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), ParkName))
         DBconnect.commit()
         DBconnect.close()
     except Exception as e:
@@ -226,14 +218,14 @@ def AddMaxPlaceVIP(add):
         return None
 
 
-def AddFreePlaceDef(add):
+def AddFreePlaceDef(add, ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceDef", NameParkList, ParkName))
         res = cursor.fetchall()
         add += int(res[0][0])
-        cursor.execute("UPDATE {} SET FreePlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        cursor.execute("UPDATE {} SET FreePlaceDef='{}' WHERE ParkName='{}'".format(NameParkList, str(add), ParkName))
         DBconnect.commit()
         DBconnect.close()
     except Exception as e:
@@ -242,14 +234,14 @@ def AddFreePlaceDef(add):
         return None
 
 
-def AddFreePlaceVIP(add):
+def AddFreePlaceVIP(add, ParkName):
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
-        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, "Parking"))
+        cursor.execute("SELECT {} FROM {} WHERE ParkName='{}'".format("FreePlaceVIP", NameParkList, ParkName))
         res = cursor.fetchall()
         add += int(res[0][0])
-        cursor.execute("UPDATE {} SET FreePlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), "Parking"))
+        cursor.execute("UPDATE {} SET FreePlaceVIP='{}' WHERE ParkName='{}'".format(NameParkList, str(add), ParkName))
         DBconnect.commit()
         DBconnect.close()
     except Exception as e:
@@ -258,3 +250,34 @@ def AddFreePlaceVIP(add):
         return None
 #endregion
 #endregion
+
+def Park(ParkName):  # Есть ли уже навзание данной стоянки
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT ParkName FROM {}".format(NameParkList))
+        res = cursor.fetchall()
+
+        for i in range(0, len(res)):
+            if(res[i][0] == ParkName):
+                DBconnect.close()
+                return True
+
+        DBconnect.close()
+        return False
+    except Exception as e:
+        print("Ошибка при проверки стоянки: " + e)
+        DBconnect.close()
+        return None
+
+def NewPark(ParkName, MaxPlaceDef, MaxPlaceVIP):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)  # Подключение к базе (возмжоно нужно ватащить наружу)
+        cursor = DBconnect.cursor()  # Место нахождение в таблице
+        cursor.execute("INSERT INTO {} (ParkName, MaxPlaceDef, FreePlaceDef, MaxPlaceVIP, FreePlaceVIP) VALUES ('{}', '{}','0', '{}', '0')".format(NameParkList, ParkName, str(MaxPlaceDef), str(MaxPlaceVIP)))
+        DBconnect.commit()  # Синхронизирует изменения с баззой
+        DBconnect.close()  # Закрывает открытую БД
+    except Exception as e:
+        print("Ошибка при занесении данных в базу: " + e)
+        DBconnect.close()
+        return None

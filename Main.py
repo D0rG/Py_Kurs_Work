@@ -1,14 +1,13 @@
 import tkinter
 from DataBase import *
-from Stack import Stack
+from Parking import Parking
 
-car = Car("Blue", "к777кс777")
-SizeParkDef = 0
-SizeParkVIP = 0
-parkDef = Stack()
-parkVIP = Stack()
+# Много стеков.
 
-print(str(GetMaxPlaceDef() + 2))
+car = Car("Blue", "к777рс777")
+Park = Parking("New Park", 10, 11)
+
+print(str(GetMaxPlaceDef("Parking")))
 
 # parkDef.push(car)
 # parkDef.push(car)
@@ -30,7 +29,8 @@ print(str(GetMaxPlaceDef() + 2))
 #         print("Автомобиль не в VIP")
 
 
-AddToVIP(car)
+#AddToVIP(car)
+y = input()
 #print(car.RegNum)
 #AddToDataBase(car, None)
 #SetUnparking(None,  car)
