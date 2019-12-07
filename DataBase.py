@@ -195,6 +195,19 @@ def GetFreePlaceVIP(ParkName):
         print("Ошибка при получении занятого места на vip парковке: " + e)
         DBconnect.close()
         return None
+
+def GetAllParkings():
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("SELECT * FROM {}".format(NameParkList))
+        res = cursor.fetchall()
+        DBconnect.close()
+        return res
+    except Exception as e:
+        print("Ошибка при получении занятого места на vip парковке: " + e)
+        DBconnect.close()
+        return -1
 #endregion
 
 #region Add

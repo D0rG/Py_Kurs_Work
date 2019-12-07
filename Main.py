@@ -55,6 +55,7 @@ class Mywin(QtWidgets.QMainWindow):
         super(Mywin, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ParkingsInit()
         self.setWindowTitle("Py_Kurs_Work")
         self.ui.PrintDB.clicked.connect(self.DrawOnTimeTable)
         self.ui.Table.setColumnCount(4)  # Кол-во столбов
@@ -67,33 +68,39 @@ class Mywin(QtWidgets.QMainWindow):
         ParkName = self.ui.TbParkName.text()
         MaxPlaceDef = self.ui.TbMaxDef.text()
         MaxPlaceVIP = self.ui.TbMaxVIP.text()
-        self.ui.TbMaxVIP.setText(None)
-        self.ui.TbMaxDef.setText(None)
-        self.ui.TbParkName.setText(None)
-        if(not Park(ParkName)):
-            try:
-                self.ParkingsList.append(Parking(ParkName, int(MaxPlaceDef), int(MaxPlaceVIP)))
-                self.CountList -=-1
-                self.UpdateParkComboBox()
-            except Exception as e:
-                QMessageBox.critical(self, "Ошибка ", "Вы не можете добавить данную парковку", QMessageBox.Ok)
+        if(not (ParkName == "" or MaxPlaceDef == "" or MaxPlaceVIP == "")):
+            self.ui.TbMaxVIP.setText(None)
+            self.ui.TbMaxDef.setText(None)
+            self.ui.TbParkName.setText(None)
+            if(not Park(ParkName)):
+                try:
+                    self.ParkingsList.append(Parking(ParkName, int(MaxPlaceDef), int(MaxPlaceVIP)))
+                    self.CountList -=-1
+                    self.UpdateParkComboBox()
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка ", "Вы не можете добавить данную парковку", QMessageBox.Ok)
+            else:
+                QMessageBox.critical(self, "Ошибка ", "Данная парковка уже существует", QMessageBox.Ok)
         else:
-            QMessageBox.critical(self, "Ошибка ", "Данная парковка уже существует", QMessageBox.Ok)
+            QMessageBox.critical(self, "Ошибка ", "Поля ввода не могут оставаться пустыми", QMessageBox.Ok)
 
     def DellParking(self):
         text = self.ui.SelectDelPark.currentText()
-        if(self.CountList > 0):  # Если нет парковок, то не пытаться их удалить
-            for i in range(self.CountList):
-                park = self.ParkingsList[i]
-                if(park.Name == text and (park.BusyPlaceDef() and park.BusyPlaceVIP())):  # Если нашлось имя такое же как у нужной парковки и на ней нет машин, то можно удалять
-                    self.ParkingsList[i].Dell()  # Удаляет парковку из БД
-                    self.ParkingsList.pop(i)  # Удаляет эллемент по индексу
-                    self.UpdateParkComboBox()  # Обновляет все комбобоксы
-                    self.CountList -= 1
-                    break
-                elif(park.Name == text and (not park.BusyPlaceDef() or not park.BusyPlaceVIP())):  # Не удалять парковку, пока на ней находиться автомобиль
-                    QMessageBox.critical(self, "Ошибка ", "Вы не можете удалит парковку, ведь на ней есть автомобили", QMessageBox.Ok)
-                    break
+        if(not (text == "")):
+            if(self.CountList > 0):  # Если нет парковок, то не пытаться их удалить
+                for i in range(self.CountList):
+                    park = self.ParkingsList[i]
+                    if(park.Name == text and (park.BusyPlaceDef() and park.BusyPlaceVIP())):  # Если нашлось имя такое же как у нужной парковки и на ней нет машин, то можно удалять
+                        self.ParkingsList[i].Dell()  # Удаляет парковку из БД
+                        self.ParkingsList.pop(i)  # Удаляет эллемент по индексу
+                        self.UpdateParkComboBox()  # Обновляет все комбобоксы
+                        self.CountList -= 1
+                        break
+                    elif(park.Name == text and (not park.BusyPlaceDef() or not park.BusyPlaceVIP())):  # Не удалять парковку, пока на ней находиться автомобиль
+                        QMessageBox.critical(self, "Ошибка ", "Вы не можете удалит парковку, ведь на ней есть автомобили", QMessageBox.Ok)
+                        break
+        else:
+            QMessageBox.critical(self, "Ошибка", "Парковка для удаления не выбрана", QMessageBox.Ok)
 
     def AddVIP(self):
         RegNum = self.ui.TbCarNumVIP.text()
@@ -144,15 +151,15 @@ class Mywin(QtWidgets.QMainWindow):
                 row = 0  # Строка
                 self.ui.Table.setRowCount(len(data))  # Кол-во строк
                 self.ui.Table.setColumnCount(4)  # Кол-во столбов
-                self.ui.Table.setHorizontalHeaderLabels(("ID", "Номер", "Время вьезда", "Время выезда"))  # Имена столбов у таблицы
+                self.ui.Table.setHorizontalHeaderLabels(("ID", "Номер", "Время въезда", "Время выезда"))  # Имена столбов у таблицы
                 for tup in data:  # Строка не поделённая на столбы
                     col = 0  # Столбец
                     for item in tup:  # Значение каждой клетки в одной строке (Разных стобах)
                         cellinfo = QTableWidgetItem(str(item))  # Задаёт элемент
                         cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
                         self.ui.Table.setItem(row, col, cellinfo)  # Вставляет элемент в определённую ячейку по строке/столбу
-                        col += 1
-                    row += 1
+                        col -=-1
+                    row -=-1
 
             elif(buf == 1):
                 data = ReturnTeble("Places")
@@ -167,8 +174,8 @@ class Mywin(QtWidgets.QMainWindow):
                         cellinfo = QTableWidgetItem(str(item))
                         cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
                         self.ui.Table.setItem(row, col, cellinfo)
-                        col += 1
-                    row += 1
+                        col -=-1
+                    row -=-1
 
             elif(buf == 2):
                 data = ReturnTeble("VIP_List")
@@ -182,14 +189,21 @@ class Mywin(QtWidgets.QMainWindow):
                         cellinfo = QTableWidgetItem(str(item))
                         cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
                         self.ui.Table.setItem(row, col, cellinfo)
-                        col += 1
-                    row += 1
+                        col -=-1
+                    row -=-1
 
         except Exception as e:
             self.ui.Table.setColumnCount(2)
             self.ui.Table.setRowCount(1)
             self.ui.Table.setItem(0, 0, QTableWidgetItem("Ошибка при выводе БД"))
             self.ui.Table.setItem(0, 1, QTableWidgetItem(str(e)))
+
+    def ParkingsInit(self):
+        list = GetAllParkings()
+        for park in list:
+            self.ParkingsList.append(Parking(park[0], park[1], park[3]))
+            self.CountList -=-1
+        self.UpdateParkComboBox()
 
 
 if __name__ == '__main__':
