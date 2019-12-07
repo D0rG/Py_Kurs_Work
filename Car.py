@@ -10,7 +10,7 @@ class Car(object):
     def __init__(self, Color, RegNum):
         if(isinstance(Color, str) and isinstance(RegNum, str)):
             try:
-                if(re.match("\w{1}\d{3}\w{2}\d{2,3}", RegNum) and len(RegNum) < 10):
+                if(re.match("\w{1}\d{3}\w{2}\d{2,3}", RegNum) and len(RegNum) < 10):  # Проверяет соответствует ли номер данному патрену (номер РФ)
                     self.Color = Color
                     self.RegNum = RegNum
                     self.SetId()

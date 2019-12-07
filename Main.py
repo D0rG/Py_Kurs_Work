@@ -50,6 +50,7 @@ from Parking import Parking
 
 class Mywin(QtWidgets.QMainWindow):
     ParkingsList = []
+    CountList = 0
     def __init__(self):  # Инициирует каждую кнопку
         super(Mywin, self).__init__()
         self.ui = Ui_MainWindow()
@@ -58,6 +59,7 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.PrintDB.clicked.connect(self.DrawOnTimeTable)
         self.ui.Table.setColumnCount(4)  # Кол-во столбов
         self.ui.BTCreatePark.clicked.connect(self.AddParking)
+        self.ui.BtDelPark.clicked.connect(self.DellParking)
 
     def AddParking(self):  # Добавляет парковку в лист парковок
         ParkName = self.ui.TbParkName.text()
@@ -68,9 +70,26 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.TbParkName.setText(None)
         try:
             self.ParkingsList.append(Parking(ParkName, int(MaxPlaceDef), int(MaxPlaceVIP)))
+            self.CountList -=-1
             self.UpdateParkComboBox()
         except Exception as e:
             print(e)
+
+    def DellParking(self):
+        text = self.ui.SelectDelPark.currentText()
+        if(self.CountList > 0):  # Если нет парковок, то не пытаться их удалить
+            for i in range(self.CountList):
+                park = self.ParkingsList[i]
+                if(park.Name == text and park.BusyPlaceDef()):  # Если нашлось имя такое же как у нужной парковки и на ней нет машин, то можно удалять
+                    self.ParkingsList[i].Dell()  # Удаляет парковку из БД
+                    self.ParkingsList.pop(i)  # Удаляет эллемент по индексу
+                    self.UpdateParkComboBox()  # Обновляет все комбобоксы
+                    self.CountList -= 1
+                    break
+                elif(park.Name == text and not park.BusyPlaceDef()):  # Не удалять парковку, пока на ней находиться автомобиль
+                    print("На парковке ещё есть автомобили")
+                    break
+
 
     def UpdateParkComboBox(self):  # Обнавляет все комбобоксы с парковками
         self.ui.SelectDelPark.clear()
@@ -86,11 +105,11 @@ class Mywin(QtWidgets.QMainWindow):
         try:
             buf = self.ui.SelectDB.currentIndex()
             if(buf == 0):
-                self.ui.Table.setHorizontalHeaderLabels(("ID", "Номер", "Время вьезда", "Время выезда"))  # Имена столбов у таблицы
                 data = ReturnTeble("CarParkingInfo")  # Имя таблицы из которой будет рисоваться таблица
                 row = 0  # Строка
                 self.ui.Table.setRowCount(len(data))  # Кол-во строк
                 self.ui.Table.setColumnCount(4)  # Кол-во столбов
+                self.ui.Table.setHorizontalHeaderLabels(("ID", "Номер", "Время вьезда", "Время выезда"))  # Имена столбов у таблицы
                 for tup in data:  # Строка не поделённая на столбы
                     col = 0  # Столбец
                     for item in tup:  # Значение каждой клетки в одной строке (Разных стобах)
@@ -105,7 +124,7 @@ class Mywin(QtWidgets.QMainWindow):
                 row = 0
                 self.ui.Table.setRowCount(len(data))  # Кол-во строк
                 self.ui.Table.setColumnCount(len(data[0]))  # Кол-во столбов
-                self.ui.Table.setHorizontalHeaderLabels(("Имя парковки", "Макс. места на обычной","Свободное место на обычной", "Макс. места на VIP","Свободное место на VIP"))
+                self.ui.Table.setHorizontalHeaderLabels(("Имя парковки", "Макс. места на обычной","Занятое место на обычной", "Макс. места на VIP","Занятое место на VIP"))
                 for tup in data:
                     col = 0
 

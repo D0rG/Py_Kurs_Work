@@ -44,3 +44,18 @@ class Parking:
     def AddToVIP(self, car):
         if(self.CanAddToVIP() and isinstance(car, Car)):
             self.parkVIP.push(car)
+
+    def BusyPlaceDef(self):  # Возвращет True если на парковке 0 автомобилей и False, если на парковке есть хотя бы один автомобиль
+        if(GetFreePlaceDef(self.Name) == 0):
+            return True
+        else:
+            return False
+
+    def BusyPlaceVIP(self):  # Возвращет True если на парковке 0 автомобилей
+        if(GetFreePlaceVIP(self.Name) == 0):
+            return True
+        else:
+            return False
+
+    def Dell(self):
+        DelPark(self.Name)

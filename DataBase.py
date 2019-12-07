@@ -282,6 +282,18 @@ def NewPark(ParkName, MaxPlaceDef, MaxPlaceVIP):
         DBconnect.close()
         return None
 
+def DelPark(ParkName):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("DELETE FROM {} WHERE ParkName='{}'".format(NameParkList, ParkName))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при удалении из базы: " + e)
+        DBconnect.close()
+        return None
+
 def ReturnTeble(Table):
     DBconnect = sqlite3.connect(DataBaseName)  # Подключение к базе (возмжоно нужно ватащить наружу)
     cursor = DBconnect.cursor()
