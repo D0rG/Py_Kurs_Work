@@ -8,12 +8,11 @@ class Car(object):
     ID = None
 
     def __init__(self, Color, RegNum):
-        if(isinstance(Color, str) and isinstance(RegNum, str)):
+        if(isinstance(Color, str) and isinstance(RegNum, str) and re.match("\w{1}\d{3}\w{2}\d{2,3}", RegNum) and len(RegNum) < 10):  # Проверяет соответствует ли номер данному патрену (номер РФ). А так же проверяте что имено передавалось
             try:
-                if(re.match("\w{1}\d{3}\w{2}\d{2,3}", RegNum) and len(RegNum) < 10):  # Проверяет соответствует ли номер данному патрену (номер РФ)
-                    self.Color = Color
-                    self.RegNum = RegNum
-                    self.SetId()
+                self.Color = Color
+                self.RegNum = RegNum
+                self.SetId()
             except Exception as e:
                 ID = None
         else:

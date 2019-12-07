@@ -127,6 +127,18 @@ def AddToVIP(Car):  # Если машина в вип листе
         print("Ошибка при добавлении в VIP список: " + e)
         DBconnect.close()
         return None
+
+def DellFromVIP(Car):
+    try:
+        DBconnect = sqlite3.connect(DataBaseName)
+        cursor = DBconnect.cursor()
+        cursor.execute("DELETE FROM {} WHERE RegNum='{}'".format(NameListVIP, Car.RegNum))
+        DBconnect.commit()
+        DBconnect.close()
+    except Exception as e:
+        print("Ошибка при удалении из базы: " + e)
+        DBconnect.close()
+        return None
 #endregion
 
 #region Places

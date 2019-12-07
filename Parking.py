@@ -57,5 +57,5 @@ class Parking:
         else:
             return False
 
-    def Dell(self):
+    def Dell(self):  # Удаляет из БД
         DelPark(self.Name)
