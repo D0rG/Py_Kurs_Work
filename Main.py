@@ -1,13 +1,19 @@
-import tkinter
+import random
+import sys
+from PyQt5 import QtWidgets, QtCore
+from PyQt5.QtSql import QSqlRelationalTableModel, QSqlDatabase, QSqlTableModel
+from PyQt5.QtWidgets import QTableWidgetItem
+
+from MainWindow import Ui_MainWindow
+
 from DataBase import *
 from Parking import Parking
 
 # Много стеков.
 
-car = Car("Blue", "к777рс777")
-Park = Parking("New Park", 10, 11)
-
-print(str(GetMaxPlaceDef("Parking")))
+# car = Car("Blue", "к777рс777")
+# Park = Parking("New Park", 10, 11)
+# print(str(GetMaxPlaceDef("Parking")))
 
 # parkDef.push(car)
 # parkDef.push(car)
@@ -28,9 +34,8 @@ print(str(GetMaxPlaceDef("Parking")))
 #     elif(VIP(car) == False):
 #         print("Автомобиль не в VIP")
 
-
 #AddToVIP(car)
-y = input()
+# y = input()
 #print(car.RegNum)
 #AddToDataBase(car, None)
 #SetUnparking(None,  car)
@@ -40,4 +45,76 @@ y = input()
 # AddMaxPlaceVIP(-122)
 # AddFreePlaceDef(-23)
 # AddFreePlaceVIP(-34)
+
+
+
+class Mywin(QtWidgets.QMainWindow):
+    def __init__(self):
+        super(Mywin, self).__init__()
+        self.ui = Ui_MainWindow()
+        self.ui.setupUi(self)
+        self.setWindowTitle("Py_Kurs_Work")
+        self.ui.PrintDB.clicked.connect(self.DrawOnTimeTable)
+        self.ui.Table.setColumnCount(4)  # Кол-во столбов
+
+
+    def DrawOnTimeTable(self):
+        try:
+            buf = self.ui.SelectDB.currentIndex()
+            if(buf == 0):
+                self.ui.Table.setHorizontalHeaderLabels(("ID", "Номер", "Время вьезда", "Время выезда"))  # Имена столбов у таблицы
+                data = ReturnTeble("CarParkingInfo")
+                row = 0
+                self.ui.Table.setRowCount(len(data))  # Кол-во строк
+                self.ui.Table.setColumnCount(4)  # Кол-во столбов
+                for tup in data:
+                    col = 0
+
+                    for item in tup:
+                        cellinfo = QTableWidgetItem(str(item))
+                        cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
+                        self.ui.Table.setItem(row, col, cellinfo)
+                        col += 1
+                    row += 1
+            elif(buf == 1):
+                data = ReturnTeble("Places")
+                row = 0
+                self.ui.Table.setRowCount(len(data))  # Кол-во строк
+                self.ui.Table.setColumnCount(len(data[0]))  # Кол-во столбов
+                self.ui.Table.setHorizontalHeaderLabels(("Имя парковки", "Макс. места на обычной","Свободное место на обычной", "Макс. места на VIP","Свободное место на VIP"))
+                for tup in data:
+                    col = 0
+
+                    for item in tup:
+                        cellinfo = QTableWidgetItem(str(item))
+                        cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
+                        self.ui.Table.setItem(row, col, cellinfo)
+                        col += 1
+                    row += 1
+            elif(buf == 2):
+                data = ReturnTeble("VIP_List")
+                row = 0
+                self.ui.Table.setRowCount(len(data))  # Кол-во строк
+                self.ui.Table.setColumnCount(len(data[0]))  # Кол-во столбов
+                self.ui.Table.setHorizontalHeaderLabels(("Автомобильный номер", ""))
+                for tup in data:
+                    col = 0
+                    for item in tup:
+                        cellinfo = QTableWidgetItem(str(item))
+                        cellinfo.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)  # Только для чтения
+                        self.ui.Table.setItem(row, col, cellinfo)
+                        col += 1
+                    row += 1
+        except Exception as e:
+            self.ui.Table.setColumnCount(2)
+            self.ui.Table.setRowCount(1)
+            self.ui.Table.setItem(0, 0, QTableWidgetItem("Ошибка при выводе БД"))
+            self.ui.Table.setItem(0, 1, QTableWidgetItem(str(e)))
+
+
+if __name__ == '__main__':
+    app = QtWidgets.QApplication(sys.argv)
+    win = Mywin()
+    win.show()
+    sys.exit(app.exec())
 

@@ -2,3 +2,5 @@ https://python-scripts.com/pymysql
 https://habr.com/ru/post/321510/
 https://habr.com/ru/post/305926/
 https://bookflow.ru/10-prostyh-shagov-k-polnomu-ponimaniyu-sql/
+
+команда конвертации pyuic5 MainWidow.ui -o MainWindow.py

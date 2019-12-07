@@ -281,3 +281,11 @@ def NewPark(ParkName, MaxPlaceDef, MaxPlaceVIP):
         print("Ошибка при занесении данных в базу: " + e)
         DBconnect.close()
         return None
+
+def ReturnTeble(Table):
+    DBconnect = sqlite3.connect(DataBaseName)  # Подключение к базе (возмжоно нужно ватащить наружу)
+    cursor = DBconnect.cursor()
+    cursor.execute("SELECT * FROM {}".format(Table))
+    res = cursor.fetchall()
+    DBconnect.close()  # Закрывает открытую БД
+    return res
