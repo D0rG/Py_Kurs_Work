@@ -15,6 +15,8 @@ class Parking:
                 self.Name = Name
                 self.MaxPlaceDef = PlaceDef
                 self.MaxPlaceVIP = PlaceVip
+                self.parkDef = Stack()
+                self.parkVIP = Stack()
                 if(not Park(self.Name)):
                     NewPark(self.Name, self.MaxPlaceDef, self.MaxPlaceVIP)
                 else:
@@ -59,3 +61,43 @@ class Parking:
 
     def Dell(self):  # Удаляет из БД
         DelPark(self.Name)
+
+    def ParkCar(self, car, place = "DEF"):
+        AddToDataBase(car, None)
+        if(place == "DEF"):
+            self.AddToDef(car)
+        else:
+            self.AddToVIP(car)
+
+    def PrintStackDef(self):
+        BufStack = Stack()
+        BufMirrorStack = Stack()
+
+        for i in range(self.parkDef.size()):
+            BufStack.push(self.parkDef.pop())
+        for i in range(BufStack.size()):
+            car = BufStack.pop()
+            BufMirrorStack.push(car)
+            self.parkDef.push(car)
+
+
+        list = []
+        for i in range(BufMirrorStack.size()):
+            list.append((BufMirrorStack.pop()).RegNum)
+        return list
+
+    def PrintStackVIP(self):
+        BufStack = Stack()
+        BufMirrorStack = Stack()
+
+        for i in range(self.parkVIP.size()):
+            BufStack.push(self.parkVIP.pop())
+        for i in range(BufStack.size()):
+            car = BufStack.pop()
+            BufMirrorStack.push(car)
+            self.parkVIP.push(car)
+
+        list = []
+        for i in range(BufMirrorStack.size()):
+            list.append((BufMirrorStack.pop()).RegNum)
+        return list

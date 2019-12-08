@@ -471,6 +471,19 @@
      </property>
     </widget>
    </widget>
+   <widget class="QPushButton" name="PrintStack">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>730</y>
+      <width>191</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Print Stack</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

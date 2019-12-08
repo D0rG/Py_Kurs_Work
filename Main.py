@@ -63,6 +63,50 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.BtDelPark.clicked.connect(self.DellParking)
         self.ui.BtAddVIP.clicked.connect(self.AddVIP)
         self.ui.BtDelVIP.clicked.connect(self.DellVIP)
+        self.ui.BtParkCar.clicked.connect(self.ParkCar)
+        self.ui.PrintStack.clicked.connect(self.Print)
+
+
+    def Print(self):
+        index = self.ui.SelectPark.currentIndex()
+        name = self.ui.SelectPark.currentText()
+        list = self.ParkingsList[index].PrintStackDef()
+        ParkInfo = "Обычкая парковка:\n"
+        for string in list:
+            ParkInfo += string + "\n"
+        QMessageBox.information(self, "Парковка {}".format(name), ParkInfo, QMessageBox.Ok)
+
+    def ParkCar(self):
+        index = self.ui.SelectPark.currentIndex()
+        ParkName = self.ui.SelectPark.currentText()
+        CarNum = self.ui.TbCarNum.text()
+        CarColor = self.ui.TbCarColor.text()
+        self.ui.TbCarNum.clear()
+        self.ui.TbCarColor.clear()
+        if(not (ParkName == "" or CarNum == "" or CarColor == "")):  # Проверка заполнения полей
+            car = Car(CarColor, CarNum)
+            if(not car.ID == None):  # Проверка на правильность автомобиля
+                if(CarOnParing(car)):  # Припаркован ли автомобиль на какой-то из парковок
+                    QMessageBox.critical(self, "Ошибка ", "Автомобиль ещё находиться на парковке",QMessageBox.Ok)
+                else:
+                    if(VIP(car)):  # Выбор типа парковки
+                        if(self.ParkingsList[index].CanAddToVIP()):
+                            self.ParkingsList[index].ParkCar(car, "VIP")
+                        elif(self.ParkingsList[index].CanAddToDef()):
+                            QMessageBox.critical(self, "Ошибка ", "На VIP парковке нет места. \nВы будете припаркованы на обычную парковку", QMessageBox.Ok)
+                            self.ParkingsList[index].ParkCar(car)
+                        else:
+                            QMessageBox.critical(self, "Ошибка ", "На парковке нет места", QMessageBox.Ok)
+                    else:
+                        if(self.ParkingsList[index].CanAddToDef()):
+                            self.ParkingsList[index].ParkCar(car)
+                        else:
+                            QMessageBox.critical(self, "Ошибка ", "На парковке нет места", QMessageBox.Ok)
+
+            else:
+                QMessageBox.critical(self, "Ошибка ", "Автомобиль не может быть добавлен на парковку", QMessageBox.Ok)
+        else:
+            QMessageBox.critical(self, "Ошибка ", "Поля ввода не могут оставаться пустыми", QMessageBox.Ok)
 
     def AddParking(self):  # Добавляет парковку в лист парковок
         ParkName = self.ui.TbParkName.text()
