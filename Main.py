@@ -74,6 +74,11 @@ class Mywin(QtWidgets.QMainWindow):
         ParkInfo = "Обычкая парковка:\n"
         for string in list:
             ParkInfo += string + "\n"
+        ParkInfo += "\n"
+        list = self.ParkingsList[index].PrintStackVIP()
+        ParkInfo += "VIP парковка:\n"
+        for string in list:
+            ParkInfo += string + "\n"
         QMessageBox.information(self, "Парковка {}".format(name), ParkInfo, QMessageBox.Ok)
 
     def ParkCar(self):
