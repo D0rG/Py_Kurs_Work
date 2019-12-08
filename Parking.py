@@ -31,13 +31,13 @@ class Parking:
         if(GetMaxPlaceDef(self.Name) - GetFreePlaceDef(self.Name) > 0):
             return True
         else:
-            return True
+            return False
 
     def CanAddToVIP(self):
         if(GetMaxPlaceVIP(self.Name) - GetFreePlaceVIP(self.Name) > 0):
             return True
         else:
-            return True
+            return False
 
     def AddToDef(self, car):
         if(self.CanAddToDef() and isinstance(car, Car)):
@@ -66,8 +66,10 @@ class Parking:
         AddToDataBase(car, None)
         if(place == "DEF"):
             self.AddToDef(car)
+            AddFreePlaceDef(1, self.Name)
         else:
             self.AddToVIP(car)
+            AddFreePlaceVIP(1, self.Name)
 
     def PrintStackDef(self):
         BufStack = Stack()
