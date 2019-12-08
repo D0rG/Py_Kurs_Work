@@ -248,7 +248,7 @@
       <x>340</x>
       <y>310</y>
       <width>361</width>
-      <height>141</height>
+      <height>181</height>
      </rect>
     </property>
     <property name="title">
@@ -336,12 +336,25 @@
       <string>Припарковать автомобиль</string>
      </property>
     </widget>
+    <widget class="QPushButton" name="PrintStack">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>140</y>
+       <width>341</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Вывести информацию о парковке (выезд наверху)</string>
+     </property>
+    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_6">
     <property name="geometry">
      <rect>
-      <x>340</x>
-      <y>460</y>
+      <x>290</x>
+      <y>590</y>
       <width>361</width>
       <height>121</height>
      </rect>
@@ -382,7 +395,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Припарковать автомобиль</string>
+      <string>Выехать с парковки</string>
      </property>
     </widget>
     <widget class="QComboBox" name="SelectParkLeave">
@@ -470,19 +483,6 @@
       <string>Убрать автомобиль из VIP листа</string>
      </property>
     </widget>
-   </widget>
-   <widget class="QPushButton" name="PrintStack">
-    <property name="geometry">
-     <rect>
-      <x>40</x>
-      <y>730</y>
-      <width>191</width>
-      <height>101</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Print Stack</string>
-    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

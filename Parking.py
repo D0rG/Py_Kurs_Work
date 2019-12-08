@@ -101,3 +101,60 @@ class Parking:
         for i in range(BufMirrorStack.size()):
             list.append((BufMirrorStack.pop()).RegNum)
         return list
+
+    def CarOnPark(self, car):
+        BufStack = Stack()
+        BufMirrorStack = Stack()
+
+        for i in range(self.parkVIP.size()):
+            BufStack.push(self.parkVIP.pop())
+        for i in range(BufStack.size()):
+            car = BufStack.pop()
+            BufMirrorStack.push(car)
+            self.parkVIP.push(car)
+
+        for i in range(BufMirrorStack.size()):
+            if((BufMirrorStack.pop()).RegNum == car.RegNum):
+                return True
+
+        for i in range(self.parkDef.size()):
+            BufStack.push(self.parkDef.pop())
+        for i in range(BufStack.size()):
+            car = BufStack.pop()
+            BufMirrorStack.push(car)
+            self.parkDef.push(car)
+
+        for i in range(BufMirrorStack.size()):
+            if ((BufMirrorStack.pop()).RegNum == car.RegNum):
+                return True
+
+        return False
+
+    def DelCar(self, car):
+        BufStack = Stack()
+        CarHere = False
+
+        for i in range(self.parkDef.size()):
+            newCar = self.parkDef.pop()
+            if(newCar.RegNum == car.RegNum):  # Удаление машины
+                CarHere = True
+                SetUnparking(None, car)
+                AddFreePlaceDef(-1, self.Name)
+            else:
+                BufStack.push(newCar)
+        for i in range(BufStack.size()):
+            self.parkDef.push(BufStack.pop())
+
+        if(CarHere):
+            return
+
+        for i in range(self.parkVIP.size()):
+            newCar = self.parkVIP.pop()
+            if(newCar.RegNum == car.RegNum):  # Удаление машины
+                CarHere = True
+                SetUnparking(None, car)
+                AddFreePlaceVIP(-1, self.Name)
+            else:
+                BufStack.push(newCar)
+        for i in range(BufStack.size()):
+            self.parkVIP.push(BufStack.pop())

@@ -49,8 +49,8 @@ from Parking import Parking
 
 
 class Mywin(QtWidgets.QMainWindow):
-    ParkingsList = []
-    CountList = 0
+    ParkingsList = []  # Хранит себе все парковки
+    CountList = 0  # Кол-во парковок
     def __init__(self):  # Инициирует каждую кнопку
         super(Mywin, self).__init__()
         self.ui = Ui_MainWindow()
@@ -65,26 +65,45 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.BtDelVIP.clicked.connect(self.DellVIP)
         self.ui.BtParkCar.clicked.connect(self.ParkCar)
         self.ui.PrintStack.clicked.connect(self.Print)
+        self.ui.BtLeaveParkCar.clicked.connect(self.OutFromParking)
 
+    def OutFromParking(self):
+        index = self.ui.SelectParkLeave.currentIndex()
+        CarNum = self.ui.TbCarNumLeave.text()
+        self.ui.TbCarNumLeave.clear()
+        CarNum = CarNum.strip()
+        car = Car("RandomColor", CarNum)
+        if(car.ID == None):
+            QMessageBox.critical(self, "Ошибка", "Введён не правильный автомобильный номер", QMessageBox.Ok)
+        else:
+            if(CarOnParing(car) and self.ParkingsList[index].CarOnPark(car)):
+                self.ParkingsList[index].DelCar(car)
+            else:
+                print(self.ParkingsList[index].CarOnPark(car))
+                QMessageBox.critical(self, "Ошибка", "Автомобиля нет на парковке", QMessageBox.Ok)
 
-    def Print(self):
-        index = self.ui.SelectPark.currentIndex()
-        name = self.ui.SelectPark.currentText()
-        list = self.ParkingsList[index].PrintStackDef()
-        ParkInfo = "Обычкая парковка:\n"
-        for string in list:
-            ParkInfo += string + "\n"
-        ParkInfo += "\n"
-        list = self.ParkingsList[index].PrintStackVIP()
-        ParkInfo += "VIP парковка:\n"
-        for string in list:
-            ParkInfo += string + "\n"
-        QMessageBox.information(self, "Парковка {}".format(name), ParkInfo, QMessageBox.Ok)
+    def Print(self):  # Выводит месседж, что находиться на парковке
+        try:
+            index = self.ui.SelectPark.currentIndex()
+            name = self.ui.SelectPark.currentText()
+            list = self.ParkingsList[index].PrintStackDef()
+            ParkInfo = "Обычкая парковка:\n"
+            for string in list:
+                ParkInfo += string + "\n"
+            ParkInfo += "\n"
+            list = self.ParkingsList[index].PrintStackVIP()
+            ParkInfo += "VIP парковка:\n"
+            for string in list:
+                ParkInfo += string + "\n"
+            QMessageBox.information(self, "Парковка {}".format(name), ParkInfo, QMessageBox.Ok)
+        except Exception as e:
+            QMessageBox.critical(self, "Ошибка", "Не получилось вывести парковку, нет парковок", QMessageBox.Ok)
 
-    def ParkCar(self):
+    def ParkCar(self):  # Парковка автомобиля
         index = self.ui.SelectPark.currentIndex()
         ParkName = self.ui.SelectPark.currentText()
         CarNum = self.ui.TbCarNum.text()
+        CarNum = CarNum.strip()
         CarColor = self.ui.TbCarColor.text()
         self.ui.TbCarNum.clear()
         self.ui.TbCarColor.clear()
@@ -133,7 +152,7 @@ class Mywin(QtWidgets.QMainWindow):
         else:
             QMessageBox.critical(self, "Ошибка ", "Поля ввода не могут оставаться пустыми", QMessageBox.Ok)
 
-    def DellParking(self):
+    def DellParking(self):  # Удаление парковки из списка
         text = self.ui.SelectDelPark.currentText()
         if(not (text == "")):
             if(self.CountList > 0):  # Если нет парковок, то не пытаться их удалить
@@ -151,7 +170,7 @@ class Mywin(QtWidgets.QMainWindow):
         else:
             QMessageBox.critical(self, "Ошибка", "Парковка для удаления не выбрана", QMessageBox.Ok)
 
-    def AddVIP(self):
+    def AddVIP(self):  # Добавление машины в VIP лист
         RegNum = self.ui.TbCarNumVIP.text()
 
         if(not (RegNum == None or RegNum == "")):
@@ -167,7 +186,7 @@ class Mywin(QtWidgets.QMainWindow):
         else:
             QMessageBox.critical(self, "Ошибка ", "Поле не может оставаться пустым", QMessageBox.Ok)
 
-    def DellVIP(self):
+    def DellVIP(self):  # Удаление машины из VIP листа
         RegNum = self.ui.TbCarNumVIP.text()
         if (not (RegNum == None or RegNum == "")):
             car = Car("RandomColor", RegNum)
@@ -242,12 +261,13 @@ class Mywin(QtWidgets.QMainWindow):
                     row -=-1
 
         except Exception as e:
-            self.ui.Table.setColumnCount(2)
-            self.ui.Table.setRowCount(1)
-            self.ui.Table.setItem(0, 0, QTableWidgetItem("Ошибка при выводе БД"))
-            self.ui.Table.setItem(0, 1, QTableWidgetItem(str(e)))
+            # self.ui.Table.setColumnCount(0) 2
+            # self.ui.Table.setRowCount(0) 1
+            # self.ui.Table.setItem(0, 0, QTableWidgetItem("Ошибка при выводе БД"))
+            # self.ui.Table.setItem(0, 1, QTableWidgetItem(str(e)))
+            QMessageBox.critical(self, "Ошибка", "Проблема с выводом базы данных.\nВозможно она пуста", QMessageBox.Ok)
 
-    def ParkingsInit(self):
+    def ParkingsInit(self):  # Вытаскивает информацию о парковках из БД и отправляет её в ParkingsList
         list = GetAllParkings()
         for park in list:
             self.ParkingsList.append(Parking(park[0], park[1], park[3]))
