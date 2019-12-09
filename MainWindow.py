@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWidow.ui'
 #
-# Created by: PyQt5 UI code generator 5.13.2
+# Created by: PyQt5 UI code generator 5.13.0
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -13,15 +13,15 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(819, 894)
+        MainWindow.resize(718, 775)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(10, 0, 791, 301))
+        self.groupBox.setGeometry(QtCore.QRect(10, 0, 691, 301))
         self.groupBox.setObjectName("groupBox")
         self.Table = QtWidgets.QTableWidget(self.groupBox)
         self.Table.setEnabled(True)
-        self.Table.setGeometry(QtCore.QRect(20, 20, 751, 241))
+        self.Table.setGeometry(QtCore.QRect(20, 20, 651, 241))
         self.Table.setColumnCount(4)
         self.Table.setObjectName("Table")
         self.Table.setRowCount(0)
@@ -136,7 +136,7 @@ class Ui_MainWindow(object):
         self.BtDelVIP.setObjectName("BtDelVIP")
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 819, 21))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 718, 26))
         self.menubar.setObjectName("menubar")
         MainWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(MainWindow)
