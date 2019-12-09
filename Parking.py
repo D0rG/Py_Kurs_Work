@@ -1,6 +1,7 @@
 from Stack import Stack
 from DataBase import*
 from Car import Car
+from Tree import *
 
 class Parking:
     Name = None
@@ -135,28 +136,90 @@ class Parking:
     def DelCar(self, car):
         BufStack = Stack()
         CarHere = False
-
+        intMoved = None
         for i in range(self.parkDef.size()):
             newCar = self.parkDef.pop()
             if(newCar.RegNum == car.RegNum):  # Удаление машины
                 CarHere = True
+                intMoved = newCar.Moved
                 SetUnparking(None, car)
                 AddFreePlaceDef(-1, self.Name)
             else:
+                newCar.Moved += 1
                 BufStack.push(newCar)
         for i in range(BufStack.size()):
             self.parkDef.push(BufStack.pop())
 
         if(CarHere):
-            return
+            return intMoved
 
         for i in range(self.parkVIP.size()):
             newCar = self.parkVIP.pop()
             if(newCar.RegNum == car.RegNum):  # Удаление машины
                 CarHere = True
+                intMoved = newCar.Moved
                 SetUnparking(None, car)
                 AddFreePlaceVIP(-1, self.Name)
             else:
                 BufStack.push(newCar)
         for i in range(BufStack.size()):
             self.parkVIP.push(BufStack.pop())
+
+        if (CarHere):
+            return intMoved
+
+    def ReturnCarListDef(self):  # Возвращает представление парковки в виде массива
+        List = []
+        parkBuf = Stack()
+
+        for i in range(self.parkDef.size()):  # Перегоняет машины в стек, что бы узнать какие машины на парковке
+            carBuf = self.parkDef.pop()
+            List.append(carBuf)
+            parkBuf.push(carBuf)
+        for i in range(parkBuf.size()):  # Отрпавляет обратно в стек
+            self.parkDef.push(parkBuf.pop())
+        return List
+
+    def ReturnCarListVIP(self):  # Возвращает представление парковки в виде массива
+        List = []
+        parkBuf = Stack()
+
+        for i in range(self.parkVIP.size()):  # Перегоняет машины в стек, что бы узнать какие машины на парковке
+            carBuf = self.parkVIP.pop()
+            List.append(carBuf)
+            parkBuf.push(carBuf)
+        for i in range(parkBuf.size()):  # Отрпавляет обратно в стек
+            self.parkVIP.push(parkBuf.pop())
+        return List
+
+
+    def SortTree(self):  # Сортирует и VIP и обычную парковку
+        temp = []  # Сюда попадает отсортированные деревом ID автомобилей
+        ListDef = self.ReturnCarListDef()
+        TreeDef = None
+        for car in ListDef:  # Перегоняет парковеу в дерево
+            TreeDef = insert(TreeDef, car.ID)
+        postorder(TreeDef, temp)  # Получает от дерева отсортированный массив
+        self.parkDef = Stack()  # Обнуляет стек
+
+        for carID in temp: # Отсортированный массив айдишников из дерева
+            for car in range(len(ListDef)):  # Массив автомобилей созданый из стека
+                if(carID == ListDef[car].ID):  # Если встречаеться айдишник, то машина попадает на парковку и удаляеться из ListDef для того что бы повторне не пробегать. Последним эллементом добавленным в стак будет корень дерева
+                    self.parkDef.push(ListDef[car])
+                    ListDef.pop(car)
+                    break
+
+        temp = []
+        ListVIP = self.ReturnCarListVIP()
+        TreeVIP = None
+        for car in ListDef:
+            TreeVIP = insert(TreeVIP, car.ID)
+        postorder(TreeVIP, temp)
+        self.parkVIP = Stack()
+
+        for carID in temp:
+            for car in range(len(ListVIP)):
+                if (carID == ListVIP[car].ID):
+                    self.parkVIP.push(ListVIP[car])
+                    ListVIP.pop(car)
+                    break

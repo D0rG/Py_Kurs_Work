@@ -66,6 +66,13 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.BtParkCar.clicked.connect(self.ParkCar)
         self.ui.PrintStack.clicked.connect(self.Print)
         self.ui.BtLeaveParkCar.clicked.connect(self.OutFromParking)
+        self.ui.TreeSort.clicked.connect(self.ParkSort)
+        self.DrawOnTimeTable()
+
+    def ParkSort(self):
+        index = self.ui.SelectParkSort.currentIndex()
+        self.ParkingsList[index].SortTree()
+
 
     def OutFromParking(self):
         index = self.ui.SelectParkLeave.currentIndex()
@@ -77,15 +84,19 @@ class Mywin(QtWidgets.QMainWindow):
             QMessageBox.critical(self, "Ошибка", "Введён не правильный автомобильный номер", QMessageBox.Ok)
         else:
             if(CarOnParing(car) and self.ParkingsList[index].CarOnPark(car)):
-                self.ParkingsList[index].DelCar(car)
+                res = self.ParkingsList[index].DelCar(car)
+                self.DrawOnTimeTable()  # Обнавялет БД
+                QMessageBox.information(self, "Парковочная информация", "Автомобиль с номером [{}] покинул парковку. \nАвтомобиль выезжал {} раз".format(car.RegNum, str(res)), QMessageBox.Ok)
             else:
                 print(self.ParkingsList[index].CarOnPark(car))
                 QMessageBox.critical(self, "Ошибка", "Автомобиля нет на парковке", QMessageBox.Ok)
 
     def Print(self):  # Выводит месседж, что находиться на парковке
         try:
-            index = self.ui.SelectPark.currentIndex()
-            name = self.ui.SelectPark.currentText()
+            # index = self.ui.SelectPark.currentIndex()
+            # name = self.ui.SelectPark.currentText()
+            index = self.ui.SelectParkWrite.currentIndex()
+            name = self.ui.SelectParkWrite.currentText()
             list = self.ParkingsList[index].PrintStackDef()
             ParkInfo = "Обычкая парковка:\n"
             for string in list:
@@ -116,14 +127,20 @@ class Mywin(QtWidgets.QMainWindow):
                     if(VIP(car)):  # Выбор типа парковки
                         if(self.ParkingsList[index].CanAddToVIP()):
                             self.ParkingsList[index].ParkCar(car, "VIP")
+                            self.DrawOnTimeTable()
+                            QMessageBox.information(self, "Парковочная информация","Автомобиль с номером [{}] припарковался.".format(car.RegNum), QMessageBox.Ok)
                         elif(self.ParkingsList[index].CanAddToDef()):
                             QMessageBox.critical(self, "Ошибка ", "На VIP парковке нет места. \nВы будете припаркованы на обычную парковку", QMessageBox.Ok)
                             self.ParkingsList[index].ParkCar(car)
+                            self.DrawOnTimeTable()
+                            QMessageBox.information(self, "Парковочная информация","Автомобиль с номером [{}] припарковался.".format(car.RegNum), QMessageBox.Ok)
                         else:
                             QMessageBox.critical(self, "Ошибка ", "На парковке нет места", QMessageBox.Ok)
                     else:
                         if(self.ParkingsList[index].CanAddToDef()):
                             self.ParkingsList[index].ParkCar(car)
+                            self.DrawOnTimeTable()
+                            QMessageBox.information(self, "Парковочная информация","Автомобиль с номером [{}] припарковался.".format(car.RegNum), QMessageBox.Ok)
                         else:
                             QMessageBox.critical(self, "Ошибка ", "На парковке нет места", QMessageBox.Ok)
 
@@ -145,6 +162,7 @@ class Mywin(QtWidgets.QMainWindow):
                     self.ParkingsList.append(Parking(ParkName, int(MaxPlaceDef), int(MaxPlaceVIP)))
                     self.CountList -=-1
                     self.UpdateParkComboBox()
+                    self.DrawOnTimeTable()
                 except Exception as e:
                     QMessageBox.critical(self, "Ошибка ", "Вы не можете добавить данную парковку", QMessageBox.Ok)
             else:
@@ -163,6 +181,7 @@ class Mywin(QtWidgets.QMainWindow):
                         self.ParkingsList.pop(i)  # Удаляет эллемент по индексу
                         self.UpdateParkComboBox()  # Обновляет все комбобоксы
                         self.CountList -= 1
+                        self.DrawOnTimeTable()
                         break
                     elif(park.Name == text and (not park.BusyPlaceDef() or not park.BusyPlaceVIP())):  # Не удалять парковку, пока на ней находиться автомобиль
                         QMessageBox.critical(self, "Ошибка ", "Вы не можете удалит парковку, ведь на ней есть автомобили", QMessageBox.Ok)
@@ -182,6 +201,7 @@ class Mywin(QtWidgets.QMainWindow):
                     QMessageBox.critical(self, "Ошибка ", "Машина уже находиться в VIP листе", QMessageBox.Ok)
                 else:
                     AddToVIP(car)  # Добавление автомобиля в вип лист
+                    self.DrawOnTimeTable()
             self.ui.TbCarNumVIP.clear()
         else:
             QMessageBox.critical(self, "Ошибка ", "Поле не может оставаться пустым", QMessageBox.Ok)
@@ -195,6 +215,7 @@ class Mywin(QtWidgets.QMainWindow):
             else:
                 if(VIP(car)):
                     DellFromVIP(car)
+                    self.DrawOnTimeTable()
                 else:
                     QMessageBox.critical(self, "Ошибка ", "Машины нет в VIP листе", QMessageBox.Ok)
             self.ui.TbCarNumVIP.clear()
@@ -205,11 +226,15 @@ class Mywin(QtWidgets.QMainWindow):
         self.ui.SelectDelPark.clear()
         self.ui.SelectPark.clear()
         self.ui.SelectParkLeave.clear()
+        self.ui.SelectParkSort.clear()
+        self.ui.SelectParkWrite.clear()
 
         for park in self.ParkingsList:
             self.ui.SelectDelPark.addItem(park.Name)
             self.ui.SelectPark.addItem(park.Name)
             self.ui.SelectParkLeave.addItem(park.Name)
+            self.ui.SelectParkSort.addItem(park.Name)
+            self.ui.SelectParkWrite.addItem(park.Name)
 
     def DrawOnTimeTable(self):  # Рисует выбранную пользователем БД
         try:

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>718</width>
-    <height>775</height>
+    <width>716</width>
+    <height>856</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -248,7 +248,7 @@
       <x>340</x>
       <y>310</y>
       <width>361</width>
-      <height>181</height>
+      <height>151</height>
      </rect>
     </property>
     <property name="title">
@@ -336,27 +336,14 @@
       <string>Припарковать автомобиль</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="PrintStack">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>140</y>
-       <width>341</width>
-       <height>31</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>Вывести информацию о парковке (выезд наверху)</string>
-     </property>
-    </widget>
    </widget>
    <widget class="QGroupBox" name="groupBox_6">
     <property name="geometry">
      <rect>
-      <x>290</x>
-      <y>590</y>
+      <x>340</x>
+      <y>470</y>
       <width>361</width>
-      <height>121</height>
+      <height>111</height>
      </rect>
     </property>
     <property name="title">
@@ -484,14 +471,112 @@
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_8">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>590</y>
+      <width>421</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Сортировка парковки</string>
+    </property>
+    <widget class="QComboBox" name="SelectParkSort">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>301</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>320</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Выбор парковки</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="TreeSort">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>401</width>
+       <height>23</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Сортировка двоичным деревом поиска</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_9">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>710</y>
+      <width>331</width>
+      <height>91</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Вывод инвормации</string>
+    </property>
+    <widget class="QComboBox" name="SelectParkWrite">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>221</width>
+       <height>22</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_12">
+     <property name="geometry">
+      <rect>
+       <x>240</x>
+       <y>20</y>
+       <width>101</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Выбор парковки</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="PrintStack">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>311</width>
+       <height>31</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Вывести информацию о парковке (выезд наверху)</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>718</width>
-     <height>26</height>
+     <width>716</width>
+     <height>21</height>
     </rect>
    </property>
   </widget>
