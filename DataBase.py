@@ -113,12 +113,12 @@ def VIP(Car):  # Если машина в вип листе
         DBconnect.close()
         return None
 
-def AddToVIP(Car):  # Если машина в вип листе
+def AddToVIP(Car):  # Добавить в VIP лист
     try:
         DBconnect = sqlite3.connect(DataBaseName)
         cursor = DBconnect.cursor()
         if(VIP(Car) == False):
-            cursor.execute("INSERT INTO {} (RegNum) VALUES ('{}')".format(NameListVIP, Car.RegNum))
+            cursor.execute("INSERT INTO {} (RegNum, ID) VALUES ('{}', '{}')".format(NameListVIP, Car.RegNum, Car.ID))
 
         DBconnect.commit()
         DBconnect.close()
