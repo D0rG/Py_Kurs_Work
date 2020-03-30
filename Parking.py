@@ -83,7 +83,6 @@ class Parking:
             BufMirrorStack.push(car)
             self.parkDef.push(car)
 
-
         list = []
         for i in range(BufMirrorStack.size()):
             list.append((BufMirrorStack.pop()).RegNum)
